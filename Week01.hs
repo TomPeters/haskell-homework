@@ -67,3 +67,15 @@ validate x = getChecksum x `mod` 10 == 0
 
 getChecksum :: Integer -> Integer
 getChecksum x = sumDigits (doubleEveryOther (toDigits x))
+
+-- |
+-- >>> hanoi 2 "a" "b" "c"
+-- [("a","c"),("a","b"),("c","b")]
+
+type Peg = String
+type Move = (Peg, Peg)
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi numberOfDiscs startPeg endPeg sparePeg 
+	| numberOfDiscs == 0 = []
+	| numberOfDiscs == 1 = [(startPeg, endPeg)]
+	| otherwise = hanoi (numberOfDiscs - 1) startPeg sparePeg endPeg ++ [(startPeg, endPeg)] ++ hanoi (numberOfDiscs - 1) sparePeg endPeg startPeg
