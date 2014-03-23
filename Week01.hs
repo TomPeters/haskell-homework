@@ -27,12 +27,17 @@ reverseDigits (x:xs) = reverseDigits xs ++ [x]
 
 -- | 
 -- >>> doubleEveryOther [8, 7, 6, 5]
--- [16, 7, 12, 5]
+-- [16,7,12,5]
 -- >>> doubleEveryOther [1, 2, 3]
--- [1, 4, 3]
+-- [1,4,3]
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = undefined
+doubleEveryOther x = reverseDigits (doubleEveryOtherFromStart (reverseDigits x))
+
+doubleEveryOtherFromStart :: [Integer] -> [Integer]
+doubleEveryOtherFromStart [] = []
+doubleEveryOtherFromStart [x] = [x]
+doubleEveryOtherFromStart (x:y:zs) = x : (2*y) : doubleEveryOtherFromStart zs
 
 -- |
 -- >>> sumDigits [] 
@@ -42,8 +47,15 @@ doubleEveryOther = undefined
 -- >>> sumDigits [16,7,12,5] 
 -- 22
 
-sumDigits :: [Integer] -> [Integer]
-sumDigits = undefined
+sumDigits :: [Integer] -> Integer
+sumDigits [] = 0
+sumDigits (x:xs) = sumDigitsOfSingleNumber x + sumDigits xs
+
+sumDigitsOfSingleNumber :: Integer -> Integer
+sumDigitsOfSingleNumber i
+	| i <= 0 = 0
+	| otherwise = i `mod`10 + sumDigitsOfSingleNumber (i `div` 10)
+
 
 -- |
 -- >>> validate 4012888888881881
@@ -51,5 +63,7 @@ sumDigits = undefined
 -- >>> validate 4012888888881882
 -- False
 validate :: Integer -> Bool
-validate = undefined
+validate x = getChecksum x `mod` 10 == 0
 
+getChecksum :: Integer -> Integer
+getChecksum x = sumDigits (doubleEveryOther (toDigits x))
